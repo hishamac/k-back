@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// https://github.com/MuhammedHashimT/eventia-api
 const connectDB = async (): Promise<void> => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI!);
