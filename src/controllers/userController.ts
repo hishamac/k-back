@@ -29,7 +29,7 @@ export const getAllUsers = async (req: Request, res: Response,) => {
 export const createUser = async (req: Request, res: Response,) => {
     try {
         const data = req.body;
-        data.id = crypto.randomBytes(10).toString("hex");
+        data._id = crypto.randomBytes(10).toString("hex");
         const user = new User(data);
         await user.save();
         res.send("User created successfully");

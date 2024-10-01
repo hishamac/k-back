@@ -8,6 +8,7 @@ import { createUser, deleteUser, updateUser, getUserInfo, getAllUsers } from '..
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from '../models/userModel';
+import bcrypt from "bcrypt";
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.delete("/user/:id", deleteUser);
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   console.log(email, password);
-  
+
   try {
     // Find the user by their email
     const user = await User.findOne({ email });
@@ -29,26 +30,36 @@ router.post("/login", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Generate a JWT token
-    const token = jwt.sign(
-      { id: user.id },
-      process.env.JWT_SECRET_KEY as string,
-      { expiresIn: "1y"}
-    );
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Internal server error" });
+      }
 
-    // Set the token as a cookie in the response with a 1-year expiration
-    res.cookie("login_token", token, {
-      httpOnly: true,
-      secure: true,
-      expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
-    });
+      if (!result) {
+        return res.status(401).json({ error: "Invalid password" });
+      }
 
-    res.status(200).json({
-      message: "Sign in successful",
-      token,
-      expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+      // Generate a JWT token
+      const token = jwt.sign(
+        { id: user.id },
+        process.env.JWT_SECRET_KEY as string,
+        { expiresIn: "1y" }
+      );
+
+      // Set the token as a cookie in the response with a 1-year expiration
+      res.cookie("login_token", token, {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+      });
+
+      res.status(200).json({
+        message: "Sign in successful",
+        token,
+        expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+      });
     });
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(400).send(error.message);
   }
 });
@@ -61,14 +72,19 @@ router.post("/signup", async (req, res) => {
     const existingUser = await User.findOne({ email: data.email });
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
-    } else {
+    }
+    bcrypt.hash(data.password, 10, async (err, hashedPassword) => {
+      if (err) {
+        return res.status(500).json({ error: "Internal server error" });
+      }
       const userId = crypto.randomBytes(10).toString("hex");
-      data.id = userId;
+      data._id = userId;
+      data.password = hashedPassword; // Hash the password before saving
       const user = new User(data);
       await user.save();
       res.status(200).json({ message: "User created successfully", data });
-    }
-  } catch (error:any) {
+    });
+  } catch (error: any) {
     res.status(400).send(error.message);
   }
 });

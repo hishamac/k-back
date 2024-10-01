@@ -1,9 +1,9 @@
 # k-back
 
-<!-- ```markdown
+```markdown
 # TODO
 
 - Landing Page
 - Roadmap
 - Connection with mentors
-``` -->
+```
