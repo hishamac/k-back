@@ -1,8 +1,3 @@
-
-// const jwt = require("jsonwebtoken");
-// const User = require("../models/User"); // Ensure you have this model
-// const crypto = require("crypto");
-
 import express from 'express';
 import { createUser, deleteUser, updateUser, getUserInfo, getAllUsers } from '../controllers/userController';
 import jwt from 'jsonwebtoken';

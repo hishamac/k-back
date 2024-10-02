@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import Skill from "../models/skillModel";
+import crypto from "crypto";
 
 // Middleware functions
 export const getSkillInfo = async (req: Request, res: Response,) => {
@@ -11,7 +12,7 @@ export const getSkillInfo = async (req: Request, res: Response,) => {
             res.send(skill);
         }
         else {
-            res.status(404).send("No such document!");
+            res.status(404).send("No such skill!");
         }
     }
     catch (error: any) {
@@ -37,9 +38,15 @@ export const getAllSkills = async (req: Request, res: Response,) => {
 export const createSkill = async (req: Request, res: Response,) => {
     try {
         const data = req.body;
-        // data.id = crypto
-        //     // .randomBytes(10)
-        //     .toString("hex");
+        if (!data.title || !data.description) {
+            res
+                .status(400)
+                .send("Please provide all required fields");
+            return;
+        }
+        data._id = crypto
+            .randomBytes(10)
+            .toString("hex");
         const skill = new Skill(data);
         await skill.save();
         res.send("Skill created successfully");

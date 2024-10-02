@@ -1,7 +1,7 @@
 import mongoose, { Document, ObjectId, Schema } from 'mongoose';
 
 interface IUser extends Document {
-    _id: ObjectId;
+    _id: String;
     email: string;
     name: string;
     password: string;

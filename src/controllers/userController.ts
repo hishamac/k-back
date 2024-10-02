@@ -10,7 +10,7 @@ export const getUserInfo = async (req: Request, res: Response,) => {
         if (user) {
             res.send(user);
         } else {
-            res.status(404).send("No such document!");
+            res.status(404).send("No such user!");
         }
     } catch (error: any) {
         res.status(400).send(error.message);

@@ -1,17 +1,17 @@
 import mongoose, { Document, ObjectId, Schema } from 'mongoose';
 
 interface Skill extends Document {
-    _id: ObjectId;
+    _id: String;
     title: string;
     description: string;
-    image: string;
+    imageUrl: string;
 }
 
 const skillSchema: Schema = new Schema({
     _id: { type: String, required: true, unique: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    image: { type: String },
+    imageUrl: { type: String },
 });
 
 const Skill = mongoose.model<Skill>("skills", skillSchema);
