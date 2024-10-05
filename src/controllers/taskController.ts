@@ -22,6 +22,40 @@ export const getTaskInfo = async (req: Request, res: Response) => {
     }
 }
 
+export const getTaskByUser = async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.id;
+        const tasks = await Task.find({ user: userId });
+        if (tasks) {
+            res.send(tasks);
+        } else {
+            res.status(404).send("No such document!");
+        }
+    }
+    catch (error: any) {
+        res
+            .status(400)
+            .send(error.message);
+    }
+}
+
+export const getTaskBySkill = async (req: Request, res: Response) => {
+    try {
+        const skillId = req.params.id;
+        const tasks = await Task.find({ skill: skillId });
+        if (tasks) {
+            res.send(tasks);
+        } else {
+            res.status(404).send("No such document!");
+        }
+    }
+    catch (error: any) {
+        res
+            .status(400)
+            .send(error.message);
+    }
+}
+
 export const getAllTasks = async (req: Request, res: Response) => {
     try {
         const tasks = await Task.find();
@@ -72,6 +106,8 @@ export const updateTask = async (req: Request, res: Response) => {
     try {
         const taskId = req.params.id;
         const data = req.body;
+        console.log(data);
+        
         const task = await Task.findByIdAndUpdate(taskId, data, { new: true });
         if (task) {
             res.send("Task updated successfully");
@@ -103,4 +139,3 @@ export const deleteTask = async (req: Request, res: Response) => {
             .send(error.message);
     }
 }
-

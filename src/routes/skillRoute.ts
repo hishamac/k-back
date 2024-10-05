@@ -1,7 +1,5 @@
 import express from 'express';
 import { createSkill,deleteSkill,getAllSkills,getSkillInfo,updateSkill } from '../controllers/skillContoller';
-// import jwt from 'jsonwebtoken';
-// import Skill from '../models/skillModel';
 
 
 const router = express.Router();

@@ -16,10 +16,13 @@ router.delete("/user/:id", deleteUser);
 // Admin login route
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
+  // console.log(email, password);
 
   try {
     // Find the user by their email
+    if (!email || !password) {
+      return res.status(400).json({ error: "Please provide email and password" });
+    }
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -36,7 +39,9 @@ router.post("/login", async (req, res) => {
 
       // Generate a JWT token
       const token = jwt.sign(
-        { id: user.id },
+        { id: user.id,
+          role: user.role
+         },
         process.env.JWT_SECRET_KEY as string,
         { expiresIn: "1y" }
       );
@@ -63,6 +68,12 @@ router.post("/login", async (req, res) => {
 router.post("/signup", async (req, res) => {
   const data = req.body;
   try {
+    if (!data.email || !data.password || !data.name || !data.role) {
+      return res.status(400).json({ error: "Please provide all required fields" });
+    }
+    if (data.role !== "admin" && data.role !== "user") {
+      return res.status(400).json({ error: "Role must be either 'admin' or 'user'" });
+    }
     // Check if user with the same email already exists
     const existingUser = await User.findOne({ email: data.email });
     if (existingUser) {

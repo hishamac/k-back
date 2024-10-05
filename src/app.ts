@@ -4,13 +4,21 @@ import postRoutes from './routes/posts';
 import userRoutes from './routes/userRoute';
 import taskRoutes from './routes/taskRoute';
 import skillRoutes from './routes/skillRoute';
+import cors from "cors";
 
 import dotenv from 'dotenv';
 dotenv.config();
 
 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(
+  cors({
+    origin: "*", // allow to server to accept request from different origin
+  })
+);
 
 connectDB();
 

@@ -2,7 +2,9 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
+
 dotenv.config();
+
 
 // https://github.com/MuhammedHashimT/eventia-api
 const connectDB = async (): Promise<void> => {
